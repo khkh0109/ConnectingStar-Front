@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ToastContainer from "@/components/common/Toast/ToastContainer/ToastContainer";
 
 import { PATH } from "@/constants/path";
+
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
+
+import { handleAllowNotification } from "@/utils/notification";
 
 import ChartPage from "@/pages/ChartPage";
 import CreateHabitPage from "@/pages/CreateHabitPage/CreateHabitPage";
@@ -30,6 +35,18 @@ import StarMainPage from "@/pages/StarMainPage/StarMainPage";
 import WithdrawalPage from "@/pages/WithdrawalPage";
 
 const App = () => {
+	useNetworkStatus();
+
+	useEffect(() => {
+		const isRegistered = localStorage.getItem("fcm_registered");
+
+		if (!isRegistered) {
+			handleAllowNotification();
+		} else {
+			console.log("Device is already registered.");
+		}
+	}, []);
+
 	return (
 		<>
 			<BrowserRouter>
@@ -42,7 +59,7 @@ const App = () => {
 					<Route path={PATH.STAR} element={<StarMainPage />} />
 					<Route path={PATH.STAR_CARD} element={<StarCardPage />} />
 					<Route path={`${PATH.STAR_CARD}/:id`} element={<StarDetailPage />} />
-					<Route path="/chart" element={<ChartPage />} />
+					<Route path={PATH.CHART} element={<ChartPage />} />
 					<Route path={PATH.MY} element={<MyPage />} />
 					<Route path={PATH.MY_INFO} element={<MyInfoPage />} />
 					<Route path="/star-trace" element={<MyStarTracePage />} />

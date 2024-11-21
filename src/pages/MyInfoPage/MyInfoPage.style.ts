@@ -16,7 +16,7 @@ export const mainBoxStyle = css`
 	gap: 40px;
 	align-items: center;
 	width: 100%;
-	padding: 4.75rem 1.5rem 0;
+	padding: calc(4.75rem + env(safe-area-inset-top)) 1.5rem 0;
 `;
 
 export const characterBoxStyle = css`
@@ -68,19 +68,8 @@ export const dividerStyle = css`
 	margin-top: 2.5rem;
 `;
 
-export const authButtonBoxStyle = css`
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-
-	& > button {
-		height: 3.625rem;
-		color: ${theme.color.font_black};
-
-		&:last-of-type {
-			color: ${theme.color.error};
-		}
-	}
+export const withdrawalButtonStyle = css`
+	height: calc(3.625rem + env(safe-area-inset-bottom));
+	color: ${theme.color.error};
+	padding-bottom: env(safe-area-inset-bottom);
 `;

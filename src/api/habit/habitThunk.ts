@@ -9,12 +9,125 @@ import type {
 	HabitRecordRequestType,
 	HabitRestRecordRequestType,
 	HabitRequestV2Type,
+	HabitHistoryRequestType,
+	HabitHistoryStatRequestType,
 } from "@/types/habit";
 
 interface EditHabitRequestType {
 	runHabitId?: string;
 	habitRequest: HabitRequestV2Type;
 }
+
+export const getHabitStatistics = createAsyncThunk(
+	"habit/getHabitStatistics",
+	async (runHabitId: number, thunkOptions) => {
+		try {
+			const { data } = await authorizedAxiosInstance.get(END_POINTS.HABIT_STATISTICS(runHabitId));
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
+
+export const getHabitListIsEnd = createAsyncThunk(
+	"habit/getHabitListIsEnd",
+	async (_, thunkOptions) => {
+		try {
+			const { data } = await authorizedAxiosInstance.get(END_POINTS.END_HABIT_LIST);
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
+
+export const getHabitListWithStatus = createAsyncThunk(
+	"habit/getHabitListWithStatus",
+	async (_, thunkOptions) => {
+		try {
+			const { data } = await authorizedAxiosInstance.get(END_POINTS.HABIT(true));
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
+
+export const getHabitList = createAsyncThunk("habit/getHabitList", async (_, thunkOptions) => {
+	try {
+		const { data } = await authorizedAxiosInstance.get(END_POINTS.HABIT());
+
+		return data;
+	} catch (error) {
+		throw thunkOptions.rejectWithValue(error);
+	}
+});
+
+export const getHabitListWithStat = createAsyncThunk(
+	"habit/getHabitListWithStat",
+	async (
+		{
+			runHabitId,
+			startDate,
+			endDate,
+			page,
+			size,
+			sortBy,
+			sortOrder,
+			related,
+		}: HabitHistoryStatRequestType,
+		thunkOptions,
+	) => {
+		try {
+			const { data } = await authorizedAxiosInstance.get(
+				END_POINTS.HABIT_HISTORY_LIST_STAT({
+					runHabitId,
+					startDate,
+					endDate,
+					page,
+					size,
+					sortBy,
+					sortOrder,
+					related,
+				}),
+			);
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
+
+export const getHabitRecordList = createAsyncThunk(
+	"habit/getHabitRecordList",
+	async (
+		{ runHabitId, isRest, page, size, sortBy, sortOrder, related }: HabitHistoryRequestType,
+		thunkOptions,
+	) => {
+		try {
+			const { data } = await authorizedAxiosInstance.get(
+				END_POINTS.HABIT_HISTORY_LIST({
+					runHabitId,
+					isRest,
+					page,
+					size,
+					sortBy,
+					sortOrder,
+					related,
+				}),
+			);
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
 
 export const getHabitRecord = createAsyncThunk(
 	"habit/getHabitRecord",
@@ -102,7 +215,7 @@ export const createHabitV2 = createAsyncThunk(
 	"habit/createHabitV2",
 	async (habitRequest: HabitRequestV2Type, thunkOptions) => {
 		try {
-			return await authorizedAxiosInstance.post(END_POINTS.HABIT, habitRequest);
+			return await authorizedAxiosInstance.post(END_POINTS.HABIT(), habitRequest);
 		} catch (error) {
 			throw thunkOptions.rejectWithValue(error);
 		}
@@ -118,6 +231,17 @@ export const getHabitRecordOneDay = createAsyncThunk(
 			return data;
 		} catch (error) {
 			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
+
+export const deleteEndHabit = createAsyncThunk(
+	"habit/deleteEndHabit",
+	async (quitHabitId: number, thunkOptions) => {
+		try {
+			return await authorizedAxiosInstance.delete(END_POINTS.DELETE_END_HABIT(quitHabitId));
+		} catch (error) {
+			thunkOptions.rejectWithValue(error);
 		}
 	},
 );

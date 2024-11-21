@@ -1,3 +1,8 @@
+import BadChartIcon from "@/assets/icon/ic-chart-bad.svg?react";
+import GoodChartIcon from "@/assets/icon/ic-chart-good.svg?react";
+import NormalChartIcon from "@/assets/icon/ic-chart-normal.svg?react";
+import VeryBadChartIcon from "@/assets/icon/ic-chart-very-bad.svg?react";
+import VeryGoodChartIcon from "@/assets/icon/ic-chart-very-good.svg?react";
 import BadIcon from "@/assets/icon/ic-emoticon-bad.svg?react";
 import GoodIcon from "@/assets/icon/ic-emoticon-good.svg?react";
 import NormalIcon from "@/assets/icon/ic-emoticon-normal.svg?react";
@@ -62,22 +67,12 @@ export const MENU_BUTTON_DATA = [
 	},
 ];
 
-export const starTraceButtonData = [
-	{
-		text: "책 읽기",
-	},
-	{
-		text: "러닝 하기",
-	},
-	{
-		text: "감사일기 작성하기",
-	},
-	{
-		text: "감사일기 작성하기2",
-	},
-	{
-		text: "감사일기 작성하기3",
-	},
+export const CHART_ICON_DATA = [
+	<VeryBadChartIcon />,
+	<BadChartIcon />,
+	<NormalChartIcon />,
+	<GoodChartIcon />,
+	<VeryGoodChartIcon />,
 ];
 
 export const habitIconData = [

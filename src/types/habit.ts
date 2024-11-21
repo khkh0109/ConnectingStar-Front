@@ -47,15 +47,44 @@ interface HabitAlertType {
 
 export interface HabitInitialStateType {
 	habit: HabitV2Type | null;
+	habitList: HabitOneDayType[] | null;
 	habitRecord: HistoryOneDayType | null;
 	habitRecordOneDay: HabitRecordOneDayType[];
+	habitRecordList: HistoryOneDayType[] | null;
+	habitListWithStatus: HabitOneDayTypeWithStatus[] | null;
+	habitListIsEnd: EndHabitType[] | null;
+	habitStatistics: HabitStatisticsType | null;
+	habitListWithStat: HistoryOneDayType[] | null;
 	isHabitLoading: boolean;
+}
+
+export interface HabitOneDayTypeWithStatus extends HabitOneDayType {
+	createdAt: Date;
+	historyCountByStatus: {
+		completedCount: number;
+		restCount: number;
+	};
 }
 
 export interface HabitRecordOneDayType {
 	habit: HabitOneDayType;
 	history: HistoryOneDayType;
 	status: HabitRecordStatusType;
+}
+
+export interface EndHabitType {
+	quitHabitId: number;
+	userId: number;
+	runTime: string;
+	place: string;
+	action: string;
+	unit: string;
+	value: number;
+	completedHistoryCount: number;
+	restHistoryCount: number;
+	reasonOfQuit: string;
+	startDate: Date;
+	quitDate: Date;
 }
 
 export interface HabitOneDayType {
@@ -81,4 +110,30 @@ export interface HistoryOneDayType {
 	runValue: string;
 	userId: number;
 	runHabit: HabitOneDayType;
+}
+
+export interface HabitHistoryRequestType {
+	runHabitId: number;
+	isRest: boolean | null;
+	page: number;
+	size: number;
+	sortBy: string;
+	sortOrder: string;
+	related: string;
+}
+
+export interface HabitHistoryStatRequestType {
+	runHabitId: number;
+	startDate: string;
+	endDate: string;
+	page: number;
+	size: number;
+	sortBy: string;
+	sortOrder: string;
+	related: string;
+}
+
+export interface HabitStatisticsType {
+	totalStarCount: number;
+	totalValue: number;
 }

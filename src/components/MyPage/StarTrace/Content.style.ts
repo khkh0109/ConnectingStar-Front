@@ -19,7 +19,14 @@ export const contentBoxStyle = css`
 	margin-top: 0.75rem;
 `;
 
-export const textBoxStyle = css`
+export const iconBoxStyle = css`
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	background-color: ${theme.color.button_disabled};
+`;
+
+export const textBoxStyle = (isEmpty: boolean) => css`
 	padding: 1rem;
 	border-radius: 15px;
 	background-color: ${theme.color.bg};
@@ -27,6 +34,15 @@ export const textBoxStyle = css`
 
 	& > p {
 		${theme.font.body_b};
+		color: ${isEmpty && theme.color.button_deactivated};
 		white-space: pre-wrap;
+		max-height: 12rem;
+		overflow: auto;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+
+		::-webkit-scrollbar {
+			display: none;
+		}
 	}
 `;
