@@ -4,21 +4,31 @@ import { axiosInstance, authorizedAxiosInstance } from "@/api/axiosInstance";
 
 import { END_POINTS } from "@/constants/api";
 
+import type { SocialType } from "@/types/user";
+
 interface WithdrawalRequestType {
 	reason: string;
 	content: string;
 	deletedDt: string;
 }
 
-export const logIn = createAsyncThunk("auth/logIn", async (authCode: string, thunkOptions) => {
-	try {
-		const { data } = await axiosInstance.post(END_POINTS.LOGIN, { socialType: "K", authCode });
+interface SocialLoginProps {
+	authCode: string;
+	socialType: SocialType;
+}
 
-		return data;
-	} catch (error) {
-		throw thunkOptions.rejectWithValue(error);
-	}
-});
+export const socialLogIn = createAsyncThunk(
+	"auth/logIn",
+	async ({ authCode, socialType }: SocialLoginProps, thunkOptions) => {
+		try {
+			const { data } = await axiosInstance.post(END_POINTS.LOGIN, { socialType, authCode });
+
+			return data;
+		} catch (error) {
+			throw thunkOptions.rejectWithValue(error);
+		}
+	},
+);
 
 export const logOut = createAsyncThunk("auth/logOut", async (_, thunkOptions) => {
 	try {

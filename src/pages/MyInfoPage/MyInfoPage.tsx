@@ -101,7 +101,10 @@ const MyInfoPage = () => {
 
 					<div css={buttonBoxStyle}>
 						<h3>로그인 계정</h3>
-						<MenuButton title="간편로그인" content="카카오톡" />
+						<MenuButton
+							title="간편로그인"
+							content={userProfile.user.socialType === "K" ? "카카오톡" : "구글"}
+						/>
 					</div>
 				</div>
 
@@ -113,7 +116,11 @@ const MyInfoPage = () => {
 
 				{modal === modalType.SELECT_CHARACTER && (
 					<SelectCharacterModal
-						prevConstellation={userProfile.user.profileConstellation.constellationId}
+						prevConstellation={
+							userProfile.user.profileConstellation === null
+								? undefined
+								: userProfile.user.profileConstellation.constellationId
+						}
 						constellationList={constellationList}
 					/>
 				)}

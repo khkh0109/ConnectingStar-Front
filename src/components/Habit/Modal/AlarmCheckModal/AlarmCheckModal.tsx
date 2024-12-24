@@ -8,17 +8,42 @@ import { closeModal } from "@/api/modal/modalSlice";
 
 import { theme } from "@/styles/theme";
 
+import type { HabitRequestV2Type } from "@/types/habit";
+
 interface AlarmCheckModalProps {
 	alarmTarget: string;
+	updateInputValue: <Key extends keyof HabitRequestV2Type>(
+		key: Key,
+		value: HabitRequestV2Type[Key],
+	) => void;
+	firstHandleToggle: (toggle: boolean) => void;
+	secondHandleToogle: (toggle: boolean) => void;
 }
 
-function AlarmCheckModal({ alarmTarget }: AlarmCheckModalProps) {
+function AlarmCheckModal({
+	alarmTarget,
+	firstHandleToggle,
+	secondHandleToogle,
+	updateInputValue,
+}: AlarmCheckModalProps) {
 	const dispatch = useAppDispatch();
 
-	console.log(alarmTarget);
+	const isFirstAlarm = alarmTarget === "firstAlertStatus";
 
 	const handleAlarmOff = () => {
-		// alarm target -> first, second에 맞춰서 끄는 api 연결
+		isFirstAlarm
+			? updateInputValue("firstAlertStatus", String(false))
+			: updateInputValue("secondAlertStatus", String(false));
+		dispatch(closeModal());
+	};
+
+	const handleAlarmOn = () => {
+		isFirstAlarm
+			? updateInputValue("firstAlertStatus", String(true))
+			: updateInputValue("secondAlertStatus", String(true));
+
+		isFirstAlarm ? firstHandleToggle(true) : secondHandleToogle(true);
+
 		dispatch(closeModal());
 	};
 
@@ -36,9 +61,7 @@ function AlarmCheckModal({ alarmTarget }: AlarmCheckModalProps) {
 					isPositionStatic
 					isTransparent
 					handleLeftBtnClick={handleAlarmOff}
-					handleBtnClick={() => {
-						dispatch(closeModal());
-					}}
+					handleBtnClick={handleAlarmOn}
 				/>
 			</div>
 		</Modal>

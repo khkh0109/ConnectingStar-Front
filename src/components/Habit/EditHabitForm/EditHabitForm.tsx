@@ -11,7 +11,7 @@ import SelectTimeModal from "@/components/common/Modal/CommonModal/SelectTimeMod
 import AlarmCheckModal from "@/components/Habit/Modal/AlarmCheckModal/AlarmCheckModal";
 
 import { useAppDispatch, useAppSelector } from "@/api/hooks";
-import { openModal } from "@/api/modal/modalSlice";
+import { closeModal, openModal } from "@/api/modal/modalSlice";
 
 import { SELECT_TAG_DATA } from "@/constants/modalConstants";
 import { modalType } from "@/constants/modalConstants";
@@ -51,20 +51,10 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 
 	const { identity, runTime, place, action, value, unit } = habit;
 
-	// api로 알람 on,off 여부 받아와서 toggle trigger와 연결
-	// const [firstAlarmOn] = useState(true);
-	// const [secondAlarmOn] = useState(false);
-
+	const firstAlertStatus = habit.habitAlerts[0].alertStatus;
+	const secondAlertStatus = habit.habitAlerts[1].alertStatus;
 	const firstAlert = habit.habitAlerts[0].alertTime;
 	const secondAlert = habit.habitAlerts[1].alertTime;
-
-	const { isToggle: firstNotiToggle, handleTogglePrev: handleFirstNotiTogglePrev } =
-		useToggleTrigger();
-
-	const { isToggle: secondNotiToggle, handleTogglePrev: handleSecondNotiTogglePrev } =
-		useToggleTrigger();
-
-	const [alarmTarget, setAlarmTarget] = useState("");
 
 	const { habitRequest, updateInputValue, handleSubmit } = useHabitForm({
 		habitId: String(habitId),
@@ -77,13 +67,43 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 			unit,
 			firstAlert,
 			secondAlert,
+			firstAlertStatus: String(firstAlertStatus),
+			secondAlertStatus: String(secondAlertStatus),
 		},
 	});
+
+	const {
+		isToggle: firstNotiToggle,
+		handleToggle: firstHandleToggle,
+		handleTogglePrev: handleFirstNotiTogglePrev,
+	} = useToggleTrigger({
+		toggle: Boolean(habitRequest.firstAlertStatus),
+		updateInputValue,
+		isFirst: true,
+	});
+
+	const {
+		isToggle: secondNotiToggle,
+		handleToggle: secondHandleToggle,
+		handleTogglePrev: handleSecondNotiTogglePrev,
+	} = useToggleTrigger({
+		toggle: secondAlertStatus,
+		updateInputValue,
+	});
+
+	const [alarmTarget, setAlarmTarget] = useState("");
+
+	console.log(habitRequest.firstAlert);
 
 	return (
 		<>
 			<Header>
-				<Header.CloseButton />
+				<Header.CloseButton
+					onClick={() => {
+						navigate(PATH.MAIN);
+						dispatch(closeModal());
+					}}
+				/>
 				<Header.Title>습관관리</Header.Title>
 				<Header.TextButton
 					onClick={() => {
@@ -139,7 +159,7 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 						hasToggle
 						isToggle={firstNotiToggle}
 						onClick={() => {
-							setAlarmTarget("first");
+							setAlarmTarget("firstAlertStatus");
 							dispatch(openModal(modalType.ALARM_CHECK));
 						}}
 						onTimeClick={() => dispatch(openModal(modalType.SELECT_TIME("FIRSTALERT")))}
@@ -152,7 +172,7 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 						hasToggle
 						isToggle={secondNotiToggle}
 						onClick={() => {
-							setAlarmTarget("second");
+							setAlarmTarget("secondAlertStatus");
 							dispatch(openModal(modalType.ALARM_CHECK));
 						}}
 						onTimeClick={() => dispatch(openModal(modalType.SELECT_TIME("SECONDALERT")))}
@@ -163,7 +183,14 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 					습관 그만두기
 				</button>
 
-				{modal === modalType.ALARM_CHECK && <AlarmCheckModal alarmTarget={alarmTarget} />}
+				{modal === modalType.ALARM_CHECK && (
+					<AlarmCheckModal
+						alarmTarget={alarmTarget}
+						updateInputValue={updateInputValue}
+						firstHandleToggle={firstHandleToggle}
+						secondHandleToogle={secondHandleToggle}
+					/>
+				)}
 
 				{modal === modalType.SELECT_IDENTITY && (
 					<SelectTagModal
@@ -174,11 +201,17 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 					/>
 				)}
 				{modal === modalType.SELECT_TIME("RUNTIME") && (
-					<SelectTimeModal title="시간을 선택해 주세요" updateInputValue={updateInputValue} />
+					<SelectTimeModal
+						title="시간을 선택해 주세요"
+						prevTime={convertFromTimeString(habitRequest.runTime)}
+						updateInputValue={updateInputValue}
+						runTime={habitRequest.runTime}
+					/>
 				)}
 				{modal == modalType.SELECT_TIME("FIRSTALERT") && (
 					<SelectTimeModal
 						title="1차 알림시간을 선택해 주세요"
+						prevTime={convertFromTimeString(habitRequest.firstAlert)}
 						updateInputValue={updateInputValue}
 						runTime={habitRequest.runTime}
 					/>
@@ -186,6 +219,7 @@ const EditHabitForm = ({ habitId, habit, nickname }: EditHabitFormProps) => {
 				{modal == modalType.SELECT_TIME("SECONDALERT") && (
 					<SelectTimeModal
 						title="2차 알림시간을 선택해 주세요"
+						prevTime={convertFromTimeString(habitRequest.secondAlert)}
 						updateInputValue={updateInputValue}
 						runTime={habitRequest.runTime}
 					/>
