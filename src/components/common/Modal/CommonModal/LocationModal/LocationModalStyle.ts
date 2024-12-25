@@ -4,17 +4,25 @@ import { theme } from "@/styles/theme";
 
 export const container = css`
 	position: fixed;
-	top: 0;
+	bottom: 0;
 	left: 0;
+	right: 0;
 	width: 100%;
-	height: 100vh;
+	height: 100dvh;
 	background-color: white;
 	z-index: ${theme.zIndex.overlayMiddle};
+	transform: translate(0, 0);
+	overflow-y: auto;
+	overscroll-behavior-y: none;
 `;
-export const wrap = css`
+
+export const contents = css`
 	width: 22.5rem;
-	padding: calc(4.75rem + env(safe-area-inset-top)) 1.5rem;
+	height: 100%;
+	padding: calc(4.75rem + env(safe-area-inset-top)) 1.5rem 0;
 	margin: 0 auto;
+	overflow-y: auto;
+
 	& > h1 {
 		margin-bottom: 2.5rem;
 		${theme.font.head_a}
@@ -55,11 +63,10 @@ export const locationInputStyle = css`
 	}
 
 	&:focus {
-		position: fixed;
-		bottom: 4.688rem;
 		outline: none;
 		background-color: ${theme.color.bg};
 		color: black;
+		margin-bottom: 4.6875rem;
 	}
 
 	::-webkit-search-decoration,
@@ -68,4 +75,12 @@ export const locationInputStyle = css`
 	::-webkit-search-results-decoration {
 		display: none;
 	}
+`;
+
+export const scrollable = css`
+	width: 1px;
+	height: calc(100% + 1px);
+	position: absolute;
+	top: 0;
+	left: 0;
 `;
